@@ -1,6 +1,29 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 
+const DisplayCountryData = ({country}) => {
+
+  return (
+    <div>
+      <h1>{ country.name.common }</h1>
+      <div>capital: { country.capital }</div>
+      <div>area: { country.area }</div>
+
+      <h3>Languages:</h3>
+      <ul>
+      {Object.values(country.languages).map(language => {
+        return <li key={language}> {language} </li>
+      })}
+      </ul>
+
+      <div>
+        <img src={country.flags.png} alt="country flag" />
+      </div>
+    </div>
+  )
+
+}
+
 const DisplaySingleList = ({ country }) => {
   return (
     <div>
@@ -15,9 +38,20 @@ const DisplayWarning = () => {
 }
 
 const DisplayHandler = ({countries}) => {
+  if (countries.length === 1) {
+    return (
+      <>
+        {countries.map((country) => {
+          return <DisplayCountryData key={country.cca2} country={country} />
+        })}
+      </>
+    )
+  }
+
   if (countries.length > 10) {
     return <DisplayWarning/>
   }
+
   
   return (
     <>
