@@ -24,10 +24,12 @@ const DisplayCountryData = ({country}) => {
 
 }
 
-const DisplaySingleList = ({ country }) => {
+const DisplaySingleList = ({ country, onClick }) => {
   return (
     <div>
-      {country.name.common}
+      <pre>
+      {country.name.common} <span><button datatype={country.cca2} onClick={ () => { onClick({country})} } >show</button></span>
+      </pre>
     </div>
   )
 }
@@ -37,7 +39,7 @@ const DisplayWarning = () => {
   return <div>Too many matches, specify another filter</div>
 }
 
-const DisplayHandler = ({countries}) => {
+const DisplayHandler = ({countries, onClick}) => {
   if (countries.length === 1) {
     return (
       <>
@@ -56,7 +58,7 @@ const DisplayHandler = ({countries}) => {
   return (
     <>
       {countries.map((country) => {
-        return <DisplaySingleList key={country.cca2} country={country}/>
+        return <DisplaySingleList key={country.cca2} country={country} onClick={onClick}/>
       })}
     </>
   )
@@ -73,6 +75,7 @@ const Filter = ({onChange}) => {
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchQuery, setSearchQuery] = useState({isEmpty: true, query: ''})
+  const [click, setClick] = useState([])
 
   const hook = () => {
     axios
@@ -85,6 +88,7 @@ const App = () => {
   useEffect(hook, [])
 
   const filterListing = (e) => {
+    setClick([])
     const len = e.target.value.length
     if (len === 0) {
       searchQuery.isEmpty = true
@@ -96,9 +100,16 @@ const App = () => {
     setSearchQuery({ ...searchQuery, query: updateQuery })
   }
 
+  const showCountryInfo = (e) => {
+    const country = [e.country]
+    
+    setSearchQuery({ ...searchQuery, isEmpty: true})
+    setClick(country)
+  }
+
   const setDataToShow = () => {
     return searchQuery.isEmpty
-    ? []
+    ? click
     : countries.filter((country) => {
         return country.name.common.toLowerCase().includes(searchQuery.query.toLowerCase())
       })
@@ -110,7 +121,7 @@ const App = () => {
     <div>
       <h2>Data for countries</h2>
       <Filter onChange={filterListing} />
-      <DisplayHandler countries={dataToShow} />
+      <DisplayHandler countries={dataToShow} onClick={showCountryInfo}/>
     </div>
   )
 }
