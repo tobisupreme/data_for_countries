@@ -1,6 +1,6 @@
 # Data for countries
 
-A simple app utilising the api from [restcountries.com/](https://restcountries.com/)
+A simple app utilising the api from [restcountries.com/](https://restcountries.com/) and [https://openweathermap.org/](https://openweathermap.org/)
 
 ## Development
 
